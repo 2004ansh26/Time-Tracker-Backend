@@ -13,6 +13,10 @@ async def login_user(user: UserLogin):
     return await getUser(user)
     # return {"username": user.username, "role": timetracker_user_collection[user.username]["role"]}
 
+@router.post("/getAllUser/")
+async def get_all_user():
+    return await getAllUser()
+
 # @app.post("/login")
 # async def login(user: LoginRequest):
 #     if user.username in users_db and users_db[user.username]["password"] == user.password:

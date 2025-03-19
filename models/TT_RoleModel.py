@@ -9,12 +9,12 @@ class UserSignup(BaseModel):
     
 class UserOut(UserSignup):
         id:str = Field(alias="_id") 
-        role:Optional[str] = None
-        email:Optional[str] = None
-        password:Optional[str] = None
+        # role:Optional[str] = None
+        # email:Optional[str] = None
+        # password:Optional[str] = None
 
         @validator("id",pre=True,always=True)
-        def convert_id(cls,v):
+        def convert_userId(cls,v):
             if isinstance(v,ObjectId):
                 return str(v)
             return v
