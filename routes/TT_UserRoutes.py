@@ -13,7 +13,7 @@ async def login_user(user: UserLogin):
     return await getUser(user)
     # return {"username": user.username, "role": timetracker_user_collection[user.username]["role"]}
 
-@router.post("/getAllUser/")
+@router.get("/getAllUser/")
 async def get_all_user():
     return await getAllUser()
 

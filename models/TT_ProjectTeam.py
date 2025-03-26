@@ -8,6 +8,7 @@ from datetime import date
 # projectId	integer	foreign key ( project )
 # userId	integer	foreign key ( user )
 
+
 class ProjectTeam(BaseModel):
     projectId:str
     userId:str
