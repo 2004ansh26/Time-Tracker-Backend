@@ -19,7 +19,11 @@ async def addProjectModule(project_module:ProjectModule):
     savedProjectModule=await timetracker_projet_module_collection.insert_one(project_module.dict())
     return JSONResponse(content={"message":"Project Module added successfully"})
 
-async def getProjectModule(projectId: str = Query(None)):
+async def getProjectModule():
+    projectModules=await timetracker_projet_module_collection.find().to_list(length=None)
+    return [ProjectModuleOut(**project) for project in projectModules]
+
+async def getProjectModuleByProjectId(projectId: str = Query(None)):
     filter_query = {}
     if projectId:
         filter_query["projectId"] = projectId  # Filter by selected project ID
