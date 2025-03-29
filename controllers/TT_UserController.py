@@ -16,7 +16,7 @@ async def addUser(user:UserSignup):
 async def getUser(request: UserLogin):
     # username = request.username
     # password = request.password
-    result = await timetracker_user_collection.find_one({"username": request.username})
+    result = await timetracker_user_collection.find_one({"email": request.username_or_email})
     result["_id"] = str(result["_id"])
     # print("result.....", result)
     # print("result.....id....", result["_id"])
