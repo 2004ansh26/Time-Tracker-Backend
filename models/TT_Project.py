@@ -22,11 +22,11 @@ class Project(BaseModel):
     assignedDevelopers:List[str]
     userId:str
 class ProjectOut(Project):
-    id:str=Field(alias="_id")
+    projectId:str=Field(alias="_id")
     user_id:Optional[Dict[str,Any]]=None
     dev_id:Optional[List[Dict[str,Any]]]=None
 
-    @validator('id', pre=True, always=True)
+    @validator('projectId', pre=True, always=True)
     def convert_obectId(cls,v):
         if isinstance(v,ObjectId):
             return str(v)

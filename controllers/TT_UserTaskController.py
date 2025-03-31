@@ -1,6 +1,6 @@
 from models.TT_UserTask import UserTask,UserTaskOut
 from bson import ObjectId
-from config.TT_Db import timetracker_user_task_collection,timetracker_user_collection,timetracker_task_collection
+from config.TT_Db import timetracker_user_task_collection,timetracker_user_collection,timetracker_task_collection, timetracker_status_collection
 from fastapi.responses import JSONResponse
 
 async def addUserTask(user_task:UserTask):
@@ -18,6 +18,13 @@ async def getUserTask():
             if user_data:
                 user_data["_id"] = str(user_data["_id"])
                 user_task["user_id"] = user_data
+                if "statusId" in user_data:
+                    status_data = await timetracker_status_collection.find_one({"_id": ObjectId(user_data["statusId"])})
+                    if status_data:
+                        status_data["_id"] = str(status_data["_id"])
+                        user_data["status_id"] = status_data
+                    else:
+                        user_data["status_id"] = None
             else:
                 user_task["user_id"] = None
 

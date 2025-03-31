@@ -24,6 +24,7 @@ async def getTask():
         # Fetch project details
         if "projectId" in task:
             project_data = await timetracker_projet_collection.find_one({"_id": ObjectId(task["projectId"])})
+            # print(project_data)
             if project_data:
                 project_data["_id"] = str(project_data["_id"])
                 task["project_id"] = project_data
