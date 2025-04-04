@@ -8,8 +8,9 @@
 # totalMinutes	integer		
 
 from pydantic import BaseModel,validator,Field
-from typing import Optional,Dict,Any
+from typing import Optional,Dict,Any,List
 from bson import ObjectId
+from datetime import datetime
 
 class Task(BaseModel):
     moduleId:str
@@ -19,12 +20,17 @@ class Task(BaseModel):
     description:str
     statusId:str
     totalMinutes:int
+    assignedDevelopers:List[str]
+    startTime: Optional[datetime] = None  # Start Time
+    timeSpent: Optional[float] = 0  # Total Time Spent (minutes)
+
 
 class TaskOut(Task):
     id:str=Field(alias="_id")
     module_id: Optional[Dict[str,Any]] = None
     project_id: Optional[Dict[str,Any]] = None
     status_id: Optional[Dict[str,Any]] = None
+    dev_id:Optional[List[Dict[str,Any]]]=None
 
     @validator('id', pre=True, always=True)
     def convert_task_id(cls,v):
@@ -48,4 +54,12 @@ class TaskOut(Task):
     def convert_status_id(cls,v):
         if isinstance(v,Dict) and "_id" in v:
             v["_id"] = str(v["_id"])
+        return v
+    
+    @validator("dev_id", pre=True, always=True)
+    def convert_assignedDevelopers(cls, v):
+        if isinstance(v, list):  # Ensure it is a list of developer objects
+            for dev in v:
+                if isinstance(dev, Dict) and "_id" in dev:
+                    dev["_id"] = str(dev["_id"])  # Convert ObjectId to string
         return v

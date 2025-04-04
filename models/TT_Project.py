@@ -31,6 +31,7 @@ class ProjectOut(Project):
         if isinstance(v,ObjectId):
             return str(v)
         return v
+    
     @validator("dev_id", pre=True, always=True)
     def convert_assignedDevelopers(cls, v):
         if isinstance(v, list):  # Ensure it is a list of developer objects
@@ -38,6 +39,7 @@ class ProjectOut(Project):
                 if isinstance(dev, Dict) and "_id" in dev:
                     dev["_id"] = str(dev["_id"])  # Convert ObjectId to string
         return v
+    
     @validator("user_id",pre=True,always=True)
     def convert_userId(cls,v):
         if isinstance(v,Dict) and "_id" in v:
