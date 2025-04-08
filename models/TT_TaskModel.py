@@ -22,8 +22,8 @@ class Task(BaseModel):
     totalMinutes:int
     assignedDevelopers:List[str]
     startTime: Optional[datetime] = None  # Start Time
-    timeSpent: Optional[float] = 0  # Total Time Spent (minutes)
-
+    timeSpent: Optional[int] = 0  # Total Time Spent (minutes)
+    
 
 class TaskOut(Task):
     id:str=Field(alias="_id")

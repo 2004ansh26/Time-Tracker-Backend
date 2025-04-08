@@ -4,6 +4,13 @@ from config.TT_Db import timetracker_task_collection,timetracker_projet_module_c
 from fastapi import APIRouter,HTTPException
 from fastapi.responses import JSONResponse
 from datetime import datetime
+
+def format_seconds_to_hhmmss(seconds: int) -> str:
+    hours = seconds // 3600
+    minutes = (seconds % 3600) % 60 // 60
+    secs = seconds % 60
+    return f"{hours:02}:{minutes:02}:{secs:02}"
+
 async def addTask(task:Task):
     savedTask=await timetracker_task_collection.insert_one(task.dict())
     return JSONResponse(content={"message":"Task added successfully"})
@@ -56,6 +63,13 @@ async def getTask():
                     dev_data["_id"] = str(dev_data["_id"])
                     developer_list.append(dev_data)
             task["dev_id"] = developer_list
+                # Format timeSpent
+        if "timeSpent" in task:
+            task["formattedTimeSpent"] = format_seconds_to_hhmmss(task["timeSpent"])
+
+        # Format totalMinutes (convert minutes to seconds)
+        if "totalMinutes" in task:
+            task["formattedExpectedTime"] = format_seconds_to_hhmmss(task["totalMinutes"] * 60)
 
     return [TaskOut(**task) for task in tasks]
 
@@ -109,7 +123,14 @@ async def getAllTasksByDeveloperId(developerId: str):
                         dev_data["_id"] = str(dev_data["_id"])
                         developer_list.append(dev_data)
                 task["dev_id"] = developer_list
+            
+            # Add formatted time string
+            # if "timeSpent" in task:
+            #     task["formattedTimeSpent"] = format_seconds_to_hhmmss(task["timeSpent"])
+            # else:
+            #     task["formattedTimeSpent"] = "00:00:00"
 
+           
         # Convert MongoDB results into Pydantic models
         return [TaskOut(**task) for task in tasks]
 
@@ -201,13 +222,15 @@ async def stopTask(taskId: str):
         if not pending_status:
             return JSONResponse(content={"message": "Pending status not found"}, status_code=500)
 
+
+        elapsed_seconds = int((datetime.utcnow() - start_time).total_seconds())
         # Update task: Set status to pending, update timeSpent, and clear startTime
         await timetracker_task_collection.update_one(
             {"_id": ObjectId(taskId)},
             {
                 "$set": {
                     "statusId": str(pending_status["_id"]),
-                    "timeSpent": task.get("timeSpent", 0) + round(elapsed_time, 2),  # Add elapsed time
+                    "timeSpent": task.get("timeSpent", 0) + elapsed_seconds,  # Add elapsed time
                 },
                 "$unset": {"startTime": ""}  # Remove startTime
             }
