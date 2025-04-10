@@ -1,6 +1,6 @@
-from fastapi import APIRouter
-from models.TT_ProjectModule import ProjectModule,ProjectModuleOut
-from controllers.TT_ProjectModeluController import addProjectModule,getProjectModule,getProjectModuleByProjectId
+from fastapi import APIRouter, Body, Query
+from models.TT_ProjectModule import ProjectModule,ProjectModuleOut,ProjectModulePartialUpdate
+from controllers.TT_ProjectModeluController import addProjectModule,getProjectModule,getProjectModuleByProjectId,partiallyUpadateModule
 
 router=APIRouter()
 @router.post("/addProjectModule")
@@ -12,3 +12,6 @@ async def get_project_module():
 @router.get("/getProjectModule/{projectId}")
 async def get_project_module_by_projectId(projectId:str):
     return await getProjectModuleByProjectId(projectId=projectId)
+@router.patch("/partialUpdateProjectModule/{projecModuletId}")
+async def partial_update_project(projecModuletId: str, updateData: ProjectModulePartialUpdate = Body(...)):
+    return await partiallyUpadateModule(projecModuletId, updateData)

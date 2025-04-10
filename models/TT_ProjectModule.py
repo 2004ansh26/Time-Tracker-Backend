@@ -47,3 +47,11 @@ class ProjectModuleOut(ProjectModule):
         return v
     
 
+class ProjectModulePartialUpdate(BaseModel):
+    projectId:Optional[str]=None
+    moduleName:Optional[str]=None
+    description:Optional[str]=None
+    estimatedHours:Optional[int]=None
+    # status:str
+    startDate:Optional[datetime]=None
+    assignedDevelopers:Optional[List[str]]=None
